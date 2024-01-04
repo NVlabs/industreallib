@@ -9,6 +9,7 @@ the variables and methods that are common for all tasks.
 
 # Standard Library
 import json
+import os
 import random
 
 # Third Party
@@ -372,8 +373,8 @@ class IndustRealTaskBase:
 
         # Load config.yaml used in training
         with open(
-            "src/industreallib/rl/checkpoints/"
-            f"{self.task_instance_config.rl.checkpoint_name}/config.yaml",
+            os.path.join(os.path.dirname(__file__), '..', '..', 'rl', 'checkpoints',
+            self.task_instance_config.rl.checkpoint_name, 'config.yaml'),
             "r",
         ) as f:
             sim_config = yaml.safe_load(f)
@@ -408,9 +409,9 @@ class IndustRealTaskBase:
         # Restore policy from checkpoint
         policy.restore(
             fn=(
-                "src/industreallib/rl/checkpoints/"
-                f"{self.task_instance_config.rl.checkpoint_name}/nn/"
-                f"{self.task_instance_config.rl.checkpoint_name}.pth"
+                os.path.join(os.path.dirname(__file__), '..', '..', 'rl', 'checkpoints',
+                self.task_instance_config.rl.checkpoint_name, 'nn',
+                f"{self.task_instance_config.rl.checkpoint_name}.pth")
             )
         )
 

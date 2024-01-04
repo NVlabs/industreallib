@@ -16,6 +16,7 @@ python calibrate_extrinsics.py -p perception.yaml
 # Standard Library
 import argparse
 import json
+import os
 import time
 
 # Third Party
@@ -86,10 +87,12 @@ def _get_robot_goals(config):
     unit_perp_vec_b = perp_vec_b / perp_vec_b_norm  # (num_goals, 3)
 
     # Construct goal orientation matrices
-    goal_ori_mat = np.concatenate(
-        (unit_perp_vec_a, unit_perp_vec_b, unit_goal_ori_vec), axis=1
-    ).reshape(
-        (config.robot.num_goals, 3, 3)
+    goal_ori_mat = np.transpose(
+        np.concatenate(
+            (unit_perp_vec_a, unit_perp_vec_b, unit_goal_ori_vec), axis=1
+        ).reshape(
+            (config.robot.num_goals, 3, 3)
+        ), axes=(0, 2, 1)
     )  # (num_goals, 3, 3)
 
     return goal_pos, goal_ori_mat
@@ -243,7 +246,7 @@ def _get_extrinsics(robot_poses_t, robot_poses_r, tag_poses_t, tag_poses_r):
 
 def _save_extrinsics(config, camera_pose_t, camera_pose_r):
     """Saves the intrinsics to a JSON file."""
-    with open(f"src/industreallib/perception/io/{config.output.file_name}", "w") as f:
+    with open(os.path.join(os.path.dirname(__file__), '..', 'io', config.output.file_name), "w") as f:
         extrinsics = {"position": camera_pose_t.tolist(), "orientation": camera_pose_r.tolist()}
         json.dump(extrinsics, f)
     print("\nSaved extrinsics to file.")

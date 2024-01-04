@@ -19,7 +19,8 @@ from industreallib.sequences.classes.industreal_sequence_base import IndustRealS
 def get_sequence_instance_config(args):
     """Gets a sequence instance configuration from a YAML file."""
     sequence_instance_config_path = (
-        f"src/industreallib/sequences/instance_configs/{args.sequence_instance_config_name}.yaml"
+        os.path.join(os.path.dirname(__file__), '..', 'instance_configs',
+        f"{args.sequence_instance_config_name}.yaml")
     )
     if os.path.exists(sequence_instance_config_path):
         sequence_instance_config = OmegaConf.load(sequence_instance_config_path)

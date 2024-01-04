@@ -9,6 +9,7 @@ RealSense camera.
 
 # Standard Library
 import json
+import os
 
 # Third Party
 import cv2
@@ -19,7 +20,7 @@ from omegaconf import OmegaConf
 
 def get_perception_config(file_name, module_name):
     """Gets an IndustRealLib perception configuration from a YAML file."""
-    config = OmegaConf.load(f"src/industreallib/perception/configs/{file_name}")[f"{module_name}"]
+    config = OmegaConf.load(os.path.join(os.path.dirname(__file__), '..', 'configs', file_name))[module_name]
 
     return config
 
@@ -116,7 +117,7 @@ def label_tag_detection(image, tag_corner_pixels, tag_family):
 def save_image(image, file_name):
     """Saves an image to file."""
     print("\nSaving image...")
-    cv2.imwrite(filename=f"src/industreallib/perception/io/{file_name}", img=image)
+    cv2.imwrite(filename=os.path.join(os.path.dirname(__file__), '..', 'io', file_name), img=image)
     print("Saved image.")
 
 
@@ -177,7 +178,7 @@ def convert_tag_pose_to_robot_frame(tag_pose_t, tag_pose_r, extrinsics, robot_po
 
 def get_extrinsics(file_name):
     """Loads the extrinsics from a JSON file."""
-    with open(f"src/industreallib/perception/io/{file_name}") as f:
+    with open(os.path.join(os.path.dirname(__file__), '..', 'io', file_name)) as f:
         json_obj = f.read()
 
     extrinsics_dict = json.loads(json_obj)

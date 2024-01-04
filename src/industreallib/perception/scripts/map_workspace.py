@@ -18,6 +18,7 @@ Typical usage examples:
 # Standard Library
 import argparse
 import json
+import os
 
 # Third Party
 import cv2
@@ -172,7 +173,7 @@ def _get_pixel_length(config, tag_corner_pixels):
 
 def _save_workspace_mapping(config, workspace_bounds, pixel_length):
     """Saves the workspace mapping to a JSON file."""
-    with open(f"src/industreallib/perception/io/{config.output.file_name}", "w") as f:
+    with open(os.path.join(os.path.dirname(__file__), '..', 'io', config.output.file_name), "w") as f:
         mapping = {"workspace_bounds": workspace_bounds.tolist(), "pixel_length": pixel_length}
         json.dump(mapping, f)
     print("\nSaved workspace mapping to file.")

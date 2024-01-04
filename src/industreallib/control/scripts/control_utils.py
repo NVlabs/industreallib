@@ -70,7 +70,7 @@ def go_to_pose(franka_arm, pos, ori_mat, duration, use_impedance):
     """Goes to a specified pose."""
     # Compose goal transform
     transform = RigidTransform(
-        translation=pos, rotation=ori_mat.T, from_frame="franka_tool", to_frame="world"
+        translation=pos, rotation=ori_mat, from_frame="franka_tool", to_frame="world"
     )
 
     print("\nGoing to goal pose...")

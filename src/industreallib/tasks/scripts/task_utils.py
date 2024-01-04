@@ -19,12 +19,13 @@ def get_task_instance_config(task_instance_config_name, task_instance_config_sub
     """Gets a task instance configuration from a YAML file."""
     if task_instance_config_subdir is not None:
         task_instance_config_path = (
-            "src/industreallib/tasks/instance_configs/"
-            f"{task_instance_config_subdir}/{task_instance_config_name}.yaml"
+            os.path.join(os.path.dirname(__file__), '..', 'instance_configs',
+            task_instance_config_subdir, f"{task_instance_config_name}.yaml")
         )
     else:
         task_instance_config_path = (
-            f"src/industreallib/tasks/instance_configs/{task_instance_config_name}.yaml"
+            os.path.join(os.path.dirname(__file__), '..', 'instance_configs',
+            f"{task_instance_config_name}.yaml")
         )
 
     if os.path.exists(task_instance_config_path):

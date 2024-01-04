@@ -21,6 +21,7 @@ import json
 # Third Party
 import cv2
 import numpy as np
+import os
 import torch
 from kornia.augmentation import ColorJiggle
 from torchvision.transforms import functional as tf
@@ -66,7 +67,7 @@ def main(perception_config_file_name):
 
     # Load perception model
     model = torch.load(
-        f"src/industreallib/perception/checkpoints/{config.input.checkpoint_file_name}",
+        os.path.join(os.path.dirname(__file__), '..', 'checkpoints', config.input.checkpoint_file_name),
         map_location="cuda",
     )
 
@@ -143,7 +144,7 @@ def _get_detections(config, model, image):
 
 def _get_real_object_coords(config, boxes, masks):
     """Gets the real-world (x, y, theta) coordinates of detected objects."""
-    with open(f"src/industreallib/perception/io/{config.input.workspace_mapping_file_name}") as f:
+    with open(os.path.join(os.path.dirname(__file__), '..', 'io', config.input.workspace_mapping_file_name)) as f:
         json_obj = f.read()
     workspace_mapping = json.loads(json_obj)
     real_x_max = workspace_mapping["workspace_bounds"][0][1]
@@ -191,7 +192,7 @@ def _get_mask_angle(mask):
 
 def _save_object_detection_info(config, object_coords, labels_text):
     """Saves object detection information to a JSON file."""
-    with open(f"src/industreallib/perception/io/{config.output.json_file_name}", "w") as f:
+    with open(os.path.join(os.path.dirname(__file__), '..', 'io', config.output.json_file_name), "w") as f:
         mapping = {"object_coords": object_coords, "labels_text": labels_text}
         json.dump(mapping, f)
     print("\nSaved object detections to file.")
