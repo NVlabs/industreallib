@@ -1,0 +1,65 @@
+calibrate_extrinsics:
+  camera:
+    image_width: 1920
+    image_height: 1080
+  tag:
+    type: tagStandard52h13
+    length: 6.0  # [inches]
+    active_pixel_ratio: 0.6  # For details, see https://github.com/AprilRobotics/apriltag/wiki/AprilTag-User-Guide
+  robot:
+    home_joint_angles: [0.0, -1.76076077e-01, 0.0, -1.86691416e+00, 0.0, 1.69344379e+00, 7.85398163e-01]
+    num_goals: 1024
+    goal_pos_bounds:
+      x: [0.4, 0.6]  # 0.35 can cause self-collision
+      y: [-0.15, 0.15]
+      z: [0.2, 0.45]
+    pos_to_point_at: [0.5069, 0.0, 0.0]
+  tag_detection:
+    num_detections: 64
+    display_images: True
+  output:
+    file_name: extrinsics_industreallib.json
+
+map_workspace:
+  input:
+    extrinsics_file_name: extrinsics_industreallib.json
+  camera:
+    image_width: 1920
+    image_height: 1080
+  tag:
+    type: tagStandard52h13
+    length: 3.0  # [inches]
+    active_pixel_ratio: 0.6
+  tag_detection:
+    display_images: True
+  output:
+    file_name: workspace_mapping.json
+    image_file_name: tag_detection.png
+
+detect_objects:
+  input:
+    workspace_mapping_file_name: workspace_mapping.json
+    checkpoint_file_name: industreal_detector_pegs.pt  # options: industreal_detector_pegs, industreal_detector_gears, industreal_detector_connectors
+  camera:
+    image_width: 1920  # should be same as for map_workspace
+    image_height: 1080  # should be same as for map_workspace
+  object_detection:
+    scene:
+      type: pegs_5_classes  # options: pegs_5_classes, gears_5_classes, connectors_5_classes
+      pegs_5_classes:
+        label_names: ['background', 'round_peg', 'rect_peg', 'round_hole', 'rect_hole']
+      gears_5_classes:
+        label_names: ['background', 'gear_base', 'large_gear', 'medium_gear', 'small_gear']
+      connectors_5_classes:
+        label_names: ['background', '3_prong_receptacle', '3_prong_plug', '2_prong_receptacle', '2_prong_plug']
+    confidence_thresh: 0.9
+    display_images: True
+  augmentation:
+    augment_image: True
+    num_augmentations: 16
+  output:
+    json_file_name: object_detections.json
+    image_file_name: object_detections.png
+  
+generate_goals:
+  one_time_offset: [0.0, 0.0, 0.0]

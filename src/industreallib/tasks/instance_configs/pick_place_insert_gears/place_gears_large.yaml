@@ -1,0 +1,52 @@
+task:
+  class: IndustRealTaskPlace
+
+goals:
+  source: perception  # options: random, perception, guide
+  random:
+    num_goals: null
+    bounds: null
+  perception:
+    config: perception.yaml
+    selectors: ['gear_base']  # detections to select for task
+    goal_heights:
+      gear_base: 0.0931  # originally 0.0971
+    goal_lateral_offsets:
+      # Assuming that the gear base is roughly aligned along the robot x-axis,
+      # with the small gear towards +x, the following are appropriate offsets
+      # in the gear base frame:
+      # small gear: [0.051, 0.0]
+      # medium gear: [0.020, 0.0]
+      # large gear: [-0.030, 0.0]
+      gear_base: [-0.030, 0.0]
+  guide:
+    xy_perturbation: null
+    z_perturbation: null
+    yaw_perturbation: null
+
+motion:
+  source: rl  # options: rl, frankapy, libfranka, frankapy_and_libfranka
+  duration: 10.0
+  do_before: ['close_gripper']  # options: open_gripper, close_gripper, go_upward, go_downward, go_home
+  do_after: ['go_home']
+
+rl:
+  checkpoint_name: industreal_policy_place
+  policy_eval_freq: 60.0
+  pos_err_thresh: 0.001  # position threshold below which to terminate early
+  ori_err_rad_thresh: 0.0873  # orientation threshold below which to terminate early
+  observation_noise_pos: null
+  override_obs_goal_roll_angle: null
+
+control:
+  prop_gains: [1000, 1000, 1000, 50, 50, 50]
+  # NOTE: deriv_gains computed automatically as 2 * sqrt(prop_gains)
+  mode:
+    type: plai  # options: nominal, plai, leaky_plai
+    nominal:
+      action_scale: null
+    plai:
+      action_scale: [0.002, 0.002, 0.0015, 0.004, 0.004, 0.004]
+    leaky_plai:
+      action_scale: null
+      pos_err_thresh: null

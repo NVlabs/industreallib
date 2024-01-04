@@ -1,0 +1,29 @@
+sequence:
+  # NOTE: The task instances are executed in interleaved fashion
+  # on the specified parts. In other words, for the following
+  # parameters, the execution order would be as follows:
+  # 1) pick_pegs on round_peg
+  # 2) place_pegs on round_hole
+  # 3) insert_pegs on round_hole
+  # 4) place_pegs on rect peg
+  # 5) place_pegs on rect_hole
+  # 6) insert_pegs on rect_hole
+  task_instance_config_names: [pick_pegs, place_pegs, insert_pegs]
+  task_instance_config_subdir: null
+  pick_pegs:
+    part_order: ['round_peg', 'rect_peg']
+    do_before: ['open_gripper']  # options: open_gripper, close_gripper, go_upward, go_downward, go_home
+    do_after: ['close_gripper', 'go_upward']
+  place_pegs:
+    part_order: ['round_hole', 'rect_hole']
+    do_before: null
+    do_after: null
+  insert_pegs:
+    part_order: ['round_hole', 'rect_hole']
+    do_before: null
+    do_after: ['open_gripper', 'go_upward', 'go_home']
+
+goals:
+  source: perception  # currently the only supported option
+  perception:
+    config: perception.yaml

@@ -1,0 +1,58 @@
+sequence:
+  # NOTE: The task instances are executed in interleaved fashion
+  # on the specified parts. In other words, for the following
+  # parameters, the execution order would be as follows:
+  # 1) pick_gears_small on small_gear
+  # 2) place_gears_small on gear_base
+  # 3) insert_gears_small on gear_base
+  # 4) pick_gears_large on large_gear
+  # 5) place_gears_large on gear_base
+  # 6) insert_gears_large on gear_base
+  # 7) pick_gears_medium on medium_gear
+  # 8) place_gears_medium on gear_base
+  # 9) insert_gears_medium on gear_base
+  task_instance_config_names: [pick_gears_small, place_gears_small, insert_gears_small,
+                               pick_gears_large, place_gears_large, insert_gears_large,
+                               pick_gears_medium, place_gears_medium, insert_gears_medium]
+  task_instance_config_subdir: 'pick_place_insert_gears'
+  pick_gears_small:
+    part_order: ['small_gear']
+    do_before: ['open_gripper']  # options: open_gripper, close_gripper, go_upward, go_downward, go_home
+    do_after: ['close_gripper', 'go_upward']
+  place_gears_small:
+    part_order: ['gear_base']
+    do_before: null
+    do_after: null
+  insert_gears_small:
+    part_order: ['gear_base']
+    do_before: null
+    do_after: ['open_gripper', 'go_upward']
+  pick_gears_large:
+    part_order: ['large_gear']
+    do_before: ['open_gripper']
+    do_after: ['close_gripper', 'go_upward']
+  place_gears_large:
+    part_order: ['gear_base']
+    do_before: null
+    do_after: null
+  insert_gears_large:
+    part_order: ['gear_base']
+    do_before: null
+    do_after: ['open_gripper', 'go_upward']
+  pick_gears_medium:
+    part_order: ['medium_gear']
+    do_before: ['open_gripper']
+    do_after: ['close_gripper', 'go_upward']
+  place_gears_medium:
+    part_order: ['gear_base']
+    do_before: null
+    do_after: null
+  insert_gears_medium:
+    part_order: ['gear_base']
+    do_before: null
+    do_after: ['open_gripper', 'go_upward', 'go_home']
+
+goals:
+  source: perception  # currently the only supported option
+  perception:
+    config: perception.yaml
